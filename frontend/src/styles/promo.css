@@ -1,0 +1,359 @@
+/* ===================================================================
+   Design tokens — Ethiopian coffee + catering brand
+   Dark espresso ground instead of the usual cream/terracotta default;
+   gold marks the coffee product line, sage marks catering.
+   =================================================================== */
+:root {
+  --ink: #1b1410;        /* near-black espresso — primary background */
+  --ink-soft: #251c16;   /* slightly lifted panel background */
+  --parchment: #f2e9dc;  /* warm off-white for text on dark */
+  --parchment-dim: #c9bda9;
+  --gold: #c9a227;       /* roasted gold — coffee accent */
+  --gold-soft: #e3c873;
+  --clay: #a65a36;       /* terracotta — used sparingly, not as primary accent */
+  --sage: #6b7a4f;       /* catering accent */
+  --sage-soft: #8d9c6b;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+.promo {
+  background: var(--ink);
+  color: var(--parchment);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+.promo * {
+  box-sizing: border-box;
+}
+
+.promo h1,
+.promo h2,
+.promo h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.promo .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+}
+
+.promo section {
+  padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 5vw, 4rem);
+}
+
+.promo a {
+  color: inherit;
+}
+
+/* respect reduced-motion preference throughout */
+@media (prefers-reduced-motion: reduce) {
+  .promo * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* === Hero === */
+.hero {
+  position: relative;
+  min-height: 88vh;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: clamp(2rem, 6vw, 4rem);
+}
+
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero__media video,
+.hero__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(27, 20, 16, 0.35) 0%, rgba(27, 20, 16, 0.55) 55%, var(--ink) 100%);
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+}
+
+.hero__title {
+  font-size: clamp(2.75rem, 7vw, 5rem);
+  line-height: 1.02;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.hero__lede {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--parchment-dim);
+  max-width: 46ch;
+  margin-bottom: 2rem;
+}
+
+.hero__actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: 2px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn--gold {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.btn--gold:hover {
+  background: var(--gold-soft);
+}
+
+.btn--outline {
+  border-color: var(--parchment-dim);
+  color: var(--parchment);
+}
+
+.btn--outline:hover {
+  border-color: var(--parchment);
+  background: rgba(242, 233, 220, 0.06);
+}
+
+.btn--sage {
+  background: var(--sage);
+  color: var(--ink);
+}
+
+.btn--sage:hover {
+  background: var(--sage-soft);
+}
+
+/* === Section heading pattern === */
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.section-head h2 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  margin-top: 0.4rem;
+}
+
+/* === Process filmstrip (signature element) ===
+   Literal filmstrip: perforated top/bottom edge, horizontal scroll-snap,
+   each frame labeled with its stage in the manufacturing process. */
+.filmstrip-wrap {
+  background: var(--ink-soft);
+}
+
+.filmstrip {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 0.5rem 0;
+  margin: 0 -1.25rem;
+  padding-left: 1.25rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold) transparent;
+}
+
+.filmstrip::-webkit-scrollbar {
+  height: 6px;
+}
+.filmstrip::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 4px;
+}
+
+.frame {
+  position: relative;
+  flex: 0 0 auto;
+  width: min(74vw, 360px);
+  scroll-snap-align: start;
+  margin-right: 1.25rem;
+}
+
+.frame__sprockets {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0.6rem;
+}
+
+.frame__sprockets span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: 1px solid rgba(242, 233, 220, 0.15);
+}
+
+.frame__img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  background: #2e231b;
+  margin: 0.5rem 0;
+  filter: saturate(0.92) contrast(1.03);
+}
+
+.frame__label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.frame__num {
+  font-family: var(--font-mono);
+  color: var(--gold);
+  font-size: 0.8rem;
+}
+
+.frame__name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+}
+
+/* === Package gallery === */
+.pkg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.pkg-card {
+  background: var(--ink-soft);
+  border: 1px solid rgba(242, 233, 220, 0.08);
+}
+
+.pkg-card__img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  background: #2e231b;
+}
+
+.pkg-card__body {
+  padding: 1.1rem 1.2rem 1.4rem;
+}
+
+.pkg-card__body h3 {
+  font-size: 1.15rem;
+  margin-bottom: 0.3rem;
+}
+
+.pkg-card__body p {
+  color: var(--parchment-dim);
+  font-size: 0.9rem;
+  margin: 0 0 0.9rem;
+}
+
+/* === Catering section (sage accent, visually distinct half) === */
+.catering-section {
+  background: linear-gradient(180deg, var(--ink) 0%, #1d2218 100%);
+  border-top: 1px solid rgba(107, 122, 79, 0.25);
+}
+
+.catering-section .eyebrow {
+  color: var(--sage-soft);
+}
+
+.catering-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.catering-card {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.catering-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.catering-card:hover img {
+  transform: scale(1.04);
+}
+
+.catering-card__caption {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 1rem;
+  background: linear-gradient(180deg, transparent, rgba(27, 20, 16, 0.92));
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+}
+
+/* === Final CTA === */
+.cta-band {
+  text-align: center;
+  border-top: 1px solid rgba(242, 233, 220, 0.08);
+}
+
+.cta-band h2 {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  max-width: 18ch;
+  margin: 0 auto 1.5rem;
+}
+
+.cta-band .btn-row {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .hero {
+    align-items: center;
+    text-align: left;
+  }
+}

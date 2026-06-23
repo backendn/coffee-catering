@@ -1,0 +1,79 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: coffee_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-coffee_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+      POSTGRES_DB: ${DB_NAME:-coffee_catering}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-coffee_admin} -d ${DB_NAME:-coffee_catering}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    image: migrate/migrate:v4.17.1
+    container_name: coffee_migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./migrations:/migrations
+    command:
+      [
+        "-path", "/migrations",
+        "-database",
+        "postgres://${DB_USER:-coffee_admin}:${DB_PASSWORD:-changeme}@postgres:5432/${DB_NAME:-coffee_catering}?sslmode=disable",
+        "up"
+      ]
+    restart: "no"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: coffee_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_URL: postgres://${DB_USER:-coffee_admin}:${DB_PASSWORD:-changeme}@postgres:5432/${DB_NAME:-coffee_catering}?sslmode=disable
+      PORT: 8080
+      JWT_SECRET: ${JWT_SECRET:-dev_secret_change_me}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:5173}
+      CLOUDINARY_URL: ${CLOUDINARY_URL:-}
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app
+    command: air -c .air.toml   # live reload; swap for compiled binary in prod
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: coffee_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      VITE_API_BASE_URL: http://localhost:8080/api/v1
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host
+
+volumes:
+  postgres_data:
