@@ -111,6 +111,23 @@ function BookingForm({ packages }: { packages: CateringPackage[] }) {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+
+  function handlePhoneChange(value: string) {
+    const digitsOnly = value.replace(/\D/g, "");
+    setPhone(digitsOnly);
+    if (digitsOnly.length === 0) {
+      setPhoneError(null);
+    } else if (digitsOnly.length < 9) {
+      setPhoneError("Phone number is too short");
+    } else if (digitsOnly.length > 10) {
+      setPhoneError("Phone number is too long");
+    } else if (!/^(09|07)/.test(digitsOnly) && !/^[0-9]{4}$/.test(digitsOnly)) {
+      setPhoneError("Enter a valid Ethiopian phone number (e.g. 0911317531)");
+    } else {
+      setPhoneError(null);
+    }
+  }
   const [email, setEmail] = useState("");
   const [packageId, setPackageId] = useState("");
   const [eventDate, setEventDate] = useState("");
@@ -125,6 +142,7 @@ function BookingForm({ packages }: { packages: CateringPackage[] }) {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError(null);
+    if (phoneError) { setError("Please enter a valid phone number."); return; }
     setSubmitting(true);
     try {
       const order = await createOrder({
@@ -168,7 +186,20 @@ function BookingForm({ packages }: { packages: CateringPackage[] }) {
   return (
     <form onSubmit={handleSubmit} style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem", maxWidth: 760 }}>
       <input required placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} style={inputStyle} />
-      <input required placeholder="Phone number" value={phone} onChange={(e) => setPhone(e.target.value)} style={inputStyle} />
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.2rem" }}>
+        <input
+          required
+          type="tel"
+          inputMode="numeric"
+          placeholder="Phone number"
+          value={phone}
+          onChange={(e) => handlePhoneChange(e.target.value)}
+          style={{ ...inputStyle, borderColor: phoneError ? "#e08a6b" : undefined }}
+        />
+        {phoneError && (
+          <span style={{ color: "#e08a6b", fontSize: "0.78rem" }}>⚠ {phoneError}</span>
+        )}
+      </div>
       <input placeholder="Email (optional)" value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} />
 
       <select value={packageId} onChange={(e) => setPackageId(e.target.value)} style={inputStyle}>

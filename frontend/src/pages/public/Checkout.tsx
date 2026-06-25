@@ -10,6 +10,25 @@ export default function Checkout() {
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+
+  function handlePhoneChange(value: string) {
+    // Strip any non-digit characters as they type
+    const digitsOnly = value.replace(/\D/g, "");
+    setPhone(digitsOnly);
+
+    if (digitsOnly.length === 0) {
+      setPhoneError(null);
+    } else if (digitsOnly.length < 9) {
+      setPhoneError("Phone number is too short");
+    } else if (digitsOnly.length > 10) {
+      setPhoneError("Phone number is too long");
+    } else if (!/^(09|07|\+251)/.test(digitsOnly) && !/^[0-9]{4}$/.test(digitsOnly)) {
+      setPhoneError("Enter a valid Ethiopian phone number (e.g. 0911317531)");
+    } else {
+      setPhoneError(null);
+    }
+  }
   const [email, setEmail] = useState("");
   const [deliveryMethod, setDeliveryMethod] = useState<"pickup" | "delivery">("pickup");
   const [address, setAddress] = useState("");
@@ -25,6 +44,10 @@ export default function Checkout() {
 
     if (lines.length === 0) {
       setError("Your cart is empty.");
+      return;
+    }
+    if (phoneError) {
+      setError("Please enter a valid phone number.");
       return;
     }
     if (deliveryMethod === "delivery" && !address.trim()) {
@@ -114,7 +137,20 @@ export default function Checkout() {
           <input required value={name} onChange={(e) => setName(e.target.value)} />
         </Field>
         <Field label="Phone Number">
-          <input required value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="09XXXXXXXX" />
+          <input
+            required
+            type="tel"
+            inputMode="numeric"
+            value={phone}
+            onChange={(e) => handlePhoneChange(e.target.value)}
+            placeholder="09XXXXXXXX"
+            style={{ borderColor: phoneError ? "crimson" : undefined }}
+          />
+          {phoneError && (
+            <span style={{ color: "crimson", fontSize: "0.8rem", marginTop: "0.2rem" }}>
+              ⚠ {phoneError}
+            </span>
+          )}
         </Field>
         <Field label="Email (optional)">
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
