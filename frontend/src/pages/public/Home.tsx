@@ -44,7 +44,7 @@ export default function Home() {
         </div>
         <div className="hero__content">
           <span className="eyebrow">Roasted &amp; Ground in Addis Ababa</span>
-          <h1 className="hero__title">Soma Coffee Powder Manufacturing &amp; Catering</h1>
+          <h1 className="hero__title">Soma Coffee Products &amp; Catering</h1>
           <p className="hero__lede">
             Quality coffee powder, freshly roasted and ground to order — plus full event catering:
             food packages and Ethiopian traditional drinks, served wherever you need them.
