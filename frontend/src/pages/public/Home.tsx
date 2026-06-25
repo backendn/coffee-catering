@@ -38,7 +38,8 @@ export default function Home() {
               public/video/hero.mp4 — autoplay requires muted + playsInline
               to work reliably on mobile browsers. */}
           <video autoPlay muted loop playsInline poster="/images/process/04-roasting.jpg">
-            <source src="/video/hero.mp4" type="video/mp4" />
+            <source src="/video/hero-desktop.mp4" media="(min-width: 768px)" type="video/mp4" />
+            <source src="/video/hero1.mp4" type="video/mp4" />
           </video>
         </div>
         <div className="hero__content">

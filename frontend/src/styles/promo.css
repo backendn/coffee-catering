@@ -351,9 +351,11 @@
   flex-wrap: wrap;
 }
 
-@media (max-width: 640px) {
+
+
+@media (min-width: 768px) {
   .hero {
-    align-items: center;
-    text-align: left;
+    min-height: 60vh;
+    max-height: 700px;
   }
 }
