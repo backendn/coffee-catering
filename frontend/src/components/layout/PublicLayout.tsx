@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useCart } from "../cart/CartProvider";
-import PublicFooter from "./PublicFooter";
+import PublicFooter from "./Publicfooter";
 
 const NAV_LINKS = [
   { to: "/catalog", label: "Shop" },
