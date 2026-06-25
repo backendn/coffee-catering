@@ -31,3 +31,8 @@ export async function updateOrderStatus(orderId: string, status: string, adminNo
   });
   return res.data.data;
 }
+
+export async function getOrderByIdAdmin(orderId: string): Promise<Order> {
+  const res = await apiClient.get<ApiSuccess<Order>>(`/orders/${orderId}`);
+  return res.data.data;
+}
