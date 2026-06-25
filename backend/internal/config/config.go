@@ -37,7 +37,7 @@ func Load() *Config {
 		ResendAPIKey:   getEnv("RESEND_API_KEY", ""),
 		ResendFrom:     getEnv("RESEND_FROM", "orders@yourdomain.com"),
 		CloudinaryURL:  getEnv("CLOUDINARY_URL", ""),
-		AllowedOrigins: strings.Split(getEnv("CORS_ALLOWED_ORIGINS", "http://localhost:5173"), "https://brilliant-comfort-production-e1bf.up.railway.app", ","),
+		AllowedOrigins: strings.Split(getEnv("CORS_ALLOWED_ORIGINS", "http://localhost:5173"), ","),
 		Env:            getEnv("ENV", "development"),
 	}
 
