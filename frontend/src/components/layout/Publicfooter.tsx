@@ -109,7 +109,7 @@ export default function PublicFooter() {
             Soma Coffee began with a simple belief — that Ethiopian coffee, roasted
             and ground with honest care, should reach every home and every event at
             its freshest. We source washed single-origin beans from Yirgacheffe and
-            Gojjam, roast in small batches, and grind to order.
+            Harar, roast in small batches, and grind to order.
           </p>
           <p style={{ fontSize: "0.875rem", lineHeight: 1.7, margin: 0 }}>
             Our catering team brings the full Ethiopian coffee and food experience

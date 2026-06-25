@@ -92,7 +92,7 @@ export default function Home() {
                   margin: "0 0 1rem",
                 }}
               >
-                Washed quality coffee from Yirgacheffe and around Gojjam — some of the best
+                Washed quality coffee from Yirgacheffe and Harar — some of the best
                 coffee in our country.
               </p>
               <p
