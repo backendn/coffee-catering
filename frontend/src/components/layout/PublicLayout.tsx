@@ -3,19 +3,12 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { useCart } from "../cart/CartProvider";
 import PublicFooter from "./Publicfooter";
 
-const NAV_LINKS = [
-  { to: "/catalog", label: "Shop" },
-  { to: "/catering", label: "Catering" },
-];
-
 export default function PublicLayout() {
   const { itemCount } = useCart();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const isFullBleed = location.pathname === "/" || location.pathname === "/catering";
-
-  function closeMenu() { setMenuOpen(false); }
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#1b1410" }}>
@@ -32,83 +25,60 @@ export default function PublicLayout() {
         zIndex: 100,
       }}>
         {/* Brand */}
-        <Link to="/" onClick={closeMenu} style={{ color: "#f2e9dc", textDecoration: "none", display: "flex", alignItems: "center", gap: "0.6rem", flex: "0 0 auto" }}>
+        <Link to="/" onClick={() => setMenuOpen(false)} style={{
+          color: "#f2e9dc", textDecoration: "none",
+          display: "flex", alignItems: "center", gap: "0.6rem", flex: "0 0 auto",
+        }}>
           <img
             src="/images/logo.png"
             alt="Soma Coffee & Catering"
             onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
             style={{ height: 38, width: "auto", objectFit: "contain" }}
           />
-          {/* Brand name hidden on small screens to avoid crowding */}
           <span style={{
-            fontWeight: 600,
-            fontSize: "1.05rem",
-            fontFamily: "Fraunces, Georgia, serif",
-            letterSpacing: "-0.01em",
-            display: "var(--brand-display, block)",
+            fontWeight: 600, fontSize: "1.05rem",
+            fontFamily: "Fraunces, Georgia, serif", letterSpacing: "-0.01em",
           }}>
             Soma Coffee &amp; Catering
           </span>
         </Link>
 
-        {/* Desktop nav */}
-        <nav style={{ display: "flex", gap: "1.5rem", alignItems: "center", fontSize: "0.92rem" }}
-          className="desktop-nav">
-          {NAV_LINKS.map((l) => (
-            <Link key={l.to} to={l.to} style={{ color: "#f2e9dc", textDecoration: "none" }}>
-              {l.label}
-            </Link>
-          ))}
+        {/* Desktop nav — visible on screens wider than 640px */}
+        <nav style={{ display: "flex", gap: "1.5rem", alignItems: "center", fontSize: "0.92rem" }}>
+          <Link to="/catalog" style={{ color: "#f2e9dc", textDecoration: "none" }}>Shop</Link>
+          <Link to="/catering" style={{ color: "#f2e9dc", textDecoration: "none" }}>Catering</Link>
           <Link to="/checkout" style={{
             color: "#1b1410", background: "#c9a227", textDecoration: "none",
-            padding: "0.45rem 0.85rem", borderRadius: 2, fontWeight: 600, fontSize: "0.9rem",
+            padding: "0.45rem 0.85rem", borderRadius: 2, fontWeight: 600,
           }}>
             Cart{itemCount > 0 ? ` (${itemCount})` : ""}
           </Link>
-        </nav>
-
-        {/* Mobile right side: cart + hamburger */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }} className="mobile-nav">
-          <Link to="/checkout" onClick={closeMenu} style={{
-            color: "#1b1410", background: "#c9a227", textDecoration: "none",
-            padding: "0.4rem 0.75rem", borderRadius: 2, fontWeight: 600, fontSize: "0.85rem",
-          }}>
-            Cart{itemCount > 0 ? ` (${itemCount})` : ""}
-          </Link>
+          {/* Hamburger — only visible on mobile via CSS */}
           <button
             onClick={() => setMenuOpen((o) => !o)}
             aria-label="Toggle menu"
+            className="hamburger-btn"
             style={{
               background: "transparent", border: "none", color: "#f2e9dc",
               cursor: "pointer", padding: "0.3rem", fontSize: "1.4rem", lineHeight: 1,
+              display: "none",
             }}
           >
             {menuOpen ? "✕" : "☰"}
           </button>
-        </div>
+        </nav>
       </header>
 
-      {/* Mobile dropdown menu */}
+      {/* Mobile dropdown — hidden on desktop via CSS */}
       {menuOpen && (
-        <div style={{
+        <div className="mobile-dropdown" style={{
           position: "fixed", top: 60, left: 0, right: 0, zIndex: 99,
           background: "#251c16", borderBottom: "1px solid rgba(242,233,220,0.1)",
-          display: "flex", flexDirection: "column",
-        }}
-          className="mobile-dropdown">
-          {NAV_LINKS.map((l) => (
-            <Link
-              key={l.to} to={l.to}
-              onClick={closeMenu}
-              style={{
-                color: "#f2e9dc", textDecoration: "none",
-                padding: "1rem 1.5rem", fontSize: "1rem",
-                borderBottom: "1px solid rgba(242,233,220,0.06)",
-              }}
-            >
-              {l.label}
-            </Link>
-          ))}
+          flexDirection: "column",
+        }}>
+          <Link to="/catalog" onClick={() => setMenuOpen(false)} style={{ color: "#f2e9dc", textDecoration: "none", padding: "1rem 1.5rem", borderBottom: "1px solid rgba(242,233,220,0.06)" }}>Shop</Link>
+          <Link to="/catering" onClick={() => setMenuOpen(false)} style={{ color: "#f2e9dc", textDecoration: "none", padding: "1rem 1.5rem", borderBottom: "1px solid rgba(242,233,220,0.06)" }}>Catering</Link>
+          <Link to="/checkout" onClick={() => setMenuOpen(false)} style={{ color: "#f2e9dc", textDecoration: "none", padding: "1rem 1.5rem" }}>Cart{itemCount > 0 ? ` (${itemCount})` : ""}</Link>
         </div>
       )}
 
@@ -122,18 +92,14 @@ export default function PublicLayout() {
 
       <PublicFooter />
 
-      {/* Responsive styles injected as a style tag — avoids adding a CSS file just for two breakpoints */}
       <style>{`
-        .desktop-nav { display: flex; }
-        .mobile-nav { display: none; }
-        .mobile-dropdown { display: flex; }
-
         @media (max-width: 640px) {
-          .desktop-nav { display: none !important; }
-          .mobile-nav { display: flex !important; }
+          .hamburger-btn { display: block !important; }
+          nav a:not(.hamburger-btn) { display: none !important; }
+          .mobile-dropdown { display: flex !important; }
         }
-
         @media (min-width: 641px) {
+          .hamburger-btn { display: none !important; }
           .mobile-dropdown { display: none !important; }
         }
       `}</style>
