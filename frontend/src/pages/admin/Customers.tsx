@@ -38,7 +38,8 @@ export default function Customers() {
       ) : customers.length === 0 ? (
         <p>No customers found{search ? ` matching "${search}"` : ""}.</p>
       ) : (
-        <table style={{ width: "100%", borderCollapse: "collapse", background: "#fff", borderRadius: 8, overflow: "hidden" }}>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", background: "#fff", borderRadius: 8, overflow: "hidden", minWidth: 500 }}>
           <thead>
             <tr style={{ textAlign: "left", background: "#efe7d8" }}>
               <th style={{ padding: "0.75rem" }}>Name</th>
@@ -60,6 +61,7 @@ export default function Customers() {
             ))}
           </tbody>
         </table>
+        </div>
       )}
     </div>
   );

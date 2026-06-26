@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { CATERING_SERVICES } from "../../data/cateringServices";
 import Slideshow from "../../components/ui/Slideshow";
 import "../../styles/promo.css";
+import { Helmet } from "react-helmet-async";
 
 // --- Process steps: roasting -> grinding -> packaging. Drop your photos
 // at the paths below (public/images/process/) — roughly 4:5 portrait
@@ -31,6 +32,20 @@ const CATERING_PHOTOS = [
 export default function Home() {
   return (
     <div className="promo">
+      <Helmet>
+        <title>Soma Coffee Products & Catering | Addis Ababa</title>
+        <meta
+          name="description"
+          content="Freshly roasted coffee — whole bean and ground — plus full event catering in Addis Ababa: food packages and Ethiopian traditional drinks, delivered wherever you need them."
+        />
+        <meta property="og:title" content="Soma Coffee Products & Catering" />
+        <meta
+          property="og:description"
+          content="Freshly roasted coffee and full event catering in Addis Ababa."
+        />
+        <meta property="og:image" content="/images/catering/01.jpg" />
+        <meta property="og:type" content="website" />
+      </Helmet>
       {/* ============ HERO ============ */}
       <section className="hero">
         <div className="hero__media">

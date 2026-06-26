@@ -167,7 +167,8 @@ function ProductRow({ product, onChange, onError }: { product: Product; onChange
       </div>
 
       {product.variants.length > 0 && (
-        <table style={{ width: "100%", marginTop: "0.75rem", fontSize: "0.85rem", borderCollapse: "collapse" }}>
+        <div style={{ overflowX: "auto", marginTop: "0.75rem" }}>
+          <table style={{ width: "100%", fontSize: "0.85rem", borderCollapse: "collapse", minWidth: 420 }}>
           <thead>
             <tr style={{ textAlign: "left", color: "#888", borderBottom: "1px solid #eee" }}>
               <th style={{ padding: "0.3rem 0.5rem" }}>SKU</th>
@@ -184,6 +185,7 @@ function ProductRow({ product, onChange, onError }: { product: Product; onChange
             ))}
           </tbody>
         </table>
+        </div>
       )}
 
       {showNewVariant && (
@@ -288,7 +290,7 @@ function VariantRow({ variant, onChanged, onError }: { variant: Variant; onChang
   );
 }
 
-function _StockEditor({ variantId, current, onSaved, onError }: { variantId: string; current: number; onSaved: () => void; onError: (e: string) => void }) {
+function StockEditor({ variantId, current, onSaved, onError }: { variantId: string; current: number; onSaved: () => void; onError: (e: string) => void }) {
   const [value, setValue] = useState(current);
   const [saving, setSaving] = useState(false);
 

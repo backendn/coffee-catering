@@ -15,36 +15,39 @@ import Products from "./pages/admin/Products";
 import CateringPackages from "./pages/admin/CateringPackages";
 import Customers from "./pages/admin/Customers";
 import ScrollToTop from "./components/Scrolltotop ";
+import { HelmetProvider } from "react-helmet-async";
 
 function App() {
   return (
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <AuthProvider>
-        <CartProvider>
-          <ScrollToTop />
-          <Routes>
-            <Route element={<PublicLayout />}>
-              <Route index element={<Home />} />
-              <Route path="catalog" element={<Catalog />} />
-              <Route path="catering" element={<Catering />} />
-              <Route path="checkout" element={<Checkout />} />
-              <Route path="order-confirmation/:orderNumber" element={<OrderConfirmation />} />
-            </Route>
-
-            <Route path="login" element={<Login />} />
-
-            <Route path="admin" element={<RequireAuth />}>
-              <Route element={<AdminLayout />}>
-                <Route path="orders" element={<Orders />} />
-                <Route path="products" element={<Products />} />
-                <Route path="catering-packages" element={<CateringPackages />} />
-                <Route path="customers" element={<Customers />} />
+    <HelmetProvider>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <AuthProvider>
+          <CartProvider>
+            <ScrollToTop />
+            <Routes>
+              <Route element={<PublicLayout />}>
+                <Route index element={<Home />} />
+                <Route path="catalog" element={<Catalog />} />
+                <Route path="catering" element={<Catering />} />
+                <Route path="checkout" element={<Checkout />} />
+                <Route path="order-confirmation/:orderNumber" element={<OrderConfirmation />} />
               </Route>
-            </Route>
-          </Routes>
-        </CartProvider>
-      </AuthProvider>
-    </BrowserRouter>
+
+              <Route path="login" element={<Login />} />
+
+              <Route path="admin" element={<RequireAuth />}>
+                <Route element={<AdminLayout />}>
+                  <Route path="orders" element={<Orders />} />
+                  <Route path="products" element={<Products />} />
+                  <Route path="catering-packages" element={<CateringPackages />} />
+                  <Route path="customers" element={<Customers />} />
+                </Route>
+              </Route>
+            </Routes>
+          </CartProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </HelmetProvider>
   );
 }
 
