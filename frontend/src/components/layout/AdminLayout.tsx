@@ -5,11 +5,11 @@ import { useAuth } from "../../hooks/useAuth";
 const NAV_ITEMS = [
   { to: "/admin/orders", label: "📋 Orders" },
   { to: "/admin/products", label: "☕ Products" },
-  { to: "/admin/catering-packages", label: "🍽 Catering Packages" },
+  { to: "/admin/catering-packages", label: "🍴 Catering Packages" },
   { to: "/admin/customers", label: "👥 Customers" },
 ];
 
-export default function AdminLayout() {a
+export default function AdminLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
