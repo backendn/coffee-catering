@@ -3,6 +3,7 @@ import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 const NAV_ITEMS = [
+  { to: "/admin/dashboard", label: "Dashboard" },
   { to: "/admin/orders", label: "📋 Orders" },
   { to: "/admin/products", label: "☕ Products" },
   { to: "/admin/catering-packages", label: "🍴 Catering Packages" },

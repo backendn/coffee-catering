@@ -11,6 +11,7 @@ import OrderConfirmation from "./pages/public/OrderConfirmation";
 import Catering from "./pages/public/Catering";
 import Login from "./pages/admin/Login";
 import Orders from "./pages/admin/Orders";
+import Dashboard from "./pages/admin/Dashboard";
 import Products from "./pages/admin/Products";
 import CateringPackages from "./pages/admin/CateringPackages";
 import Customers from "./pages/admin/Customers";
@@ -37,6 +38,8 @@ function App() {
 
               <Route path="admin" element={<RequireAuth />}>
                 <Route element={<AdminLayout />}>
+                <Route index element={<Dashboard />} />
+    <Route path="dashboard" element={<Dashboard />} />
                   <Route path="orders" element={<Orders />} />
                   <Route path="products" element={<Products />} />
                   <Route path="catering-packages" element={<CateringPackages />} />

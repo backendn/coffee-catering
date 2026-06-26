@@ -18,7 +18,7 @@ export default function Login() {
     setSubmitting(true);
     try {
       await login(username, password);
-      navigate("/admin/orders");
+      navigate("/admin/dashboard");
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
