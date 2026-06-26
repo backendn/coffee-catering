@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -9,11 +9,23 @@ const NAV_ITEMS = [
   { to: "/admin/customers", label: "👥 Customers" },
 ];
 
+// Detect mobile using window.innerWidth — avoids CSS specificity fights
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  return isMobile;
+}
+
 export default function AdminLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   function handleLogout() {
     logout();
@@ -22,45 +34,67 @@ export default function AdminLayout() {
 
   const currentPage = NAV_ITEMS.find((n) => location.pathname.startsWith(n.to))?.label.replace(/^\S+ /, "") ?? "Admin";
 
+  // Close sidebar on route change
+  useEffect(() => { setSidebarOpen(false); }, [location.pathname]);
+
   return (
-    <>
-      <style>{`
-        .admin-wrap { min-height: 100vh; display: flex; background: #f5f0e8; }
-        .admin-sidebar {
-          width: 220px; background: #2b2118; color: #fff;
-          display: flex; flex-direction: column; padding: 1.25rem 0;
-          flex-shrink: 0; z-index: 50;
-        }
-        .admin-topbar { display: none; }
-        .admin-backdrop { display: none; }
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "#f5f0e8" }}>
 
-        @media (max-width: 768px) {
-          .admin-sidebar {
-            position: fixed; top: 0; left: -220px; height: 100vh;
-            transition: left 0.25s ease;
-          }
-          .admin-sidebar.open { left: 0; }
-          .admin-topbar {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0.75rem 1rem; background: #2b2118; color: #fff;
-            position: sticky; top: 0; z-index: 30;
-          }
-          .admin-backdrop {
-            display: block; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.5); z-index: 40;
-          }
-        }
-      `}</style>
+      {/* Mobile top bar */}
+      {isMobile && (
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "0.75rem 1rem", background: "#2b2118", color: "#fff",
+          position: "sticky", top: 0, zIndex: 50,
+        }}>
+          <button
+            onClick={() => setSidebarOpen((o) => !o)}
+            style={{
+              background: "transparent", border: "none", color: "#fff",
+              fontSize: "1.6rem", cursor: "pointer", lineHeight: 1,
+              padding: "0.1rem 0.4rem",
+            }}
+          >
+            {sidebarOpen ? "✕" : "☰"}
+          </button>
+          <span style={{ fontWeight: 600, fontSize: "0.95rem" }}>{currentPage}</span>
+          <span style={{ fontSize: "0.78rem", color: "#bbb" }}>{user?.username}</span>
+        </div>
+      )}
 
-      <div className="admin-wrap">
-
-        {/* Backdrop */}
-        {sidebarOpen && (
-          <div className="admin-backdrop" onClick={() => setSidebarOpen(false)} />
+      <div style={{ display: "flex", flex: 1 }}>
+        {/* Backdrop on mobile */}
+        {isMobile && sidebarOpen && (
+          <div
+            onClick={() => setSidebarOpen(false)}
+            style={{
+              position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)",
+              zIndex: 40,
+            }}
+          />
         )}
 
         {/* Sidebar */}
-        <aside className={`admin-sidebar${sidebarOpen ? " open" : ""}`}>
+        <aside style={{
+          width: 220,
+          background: "#2b2118",
+          color: "#fff",
+          display: "flex",
+          flexDirection: "column",
+          padding: "1.25rem 0",
+          flexShrink: 0,
+          zIndex: 45,
+          // Mobile: fixed slide-in; Desktop: normal flow
+          ...(isMobile ? {
+            position: "fixed",
+            top: 0,
+            left: sidebarOpen ? 0 : -220,
+            height: "100vh",
+            transition: "left 0.25s ease",
+          } : {
+            position: "relative",
+          }),
+        }}>
           <div style={{ padding: "0 1.25rem", marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "0.6rem" }}>
             <img
               src="/images/logo.png"
@@ -78,7 +112,6 @@ export default function AdminLayout() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  onClick={() => setSidebarOpen(false)}
                   style={{
                     padding: "0.7rem 1.25rem", color: "#fff", textDecoration: "none",
                     background: active ? "rgba(255,255,255,0.1)" : "transparent",
@@ -109,29 +142,14 @@ export default function AdminLayout() {
           </div>
         </aside>
 
-        {/* Main */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-          {/* Mobile top bar */}
-          <div className="admin-topbar">
-            <button
-              onClick={() => setSidebarOpen((o) => !o)}
-              style={{
-                background: "transparent", border: "none", color: "#fff",
-                fontSize: "1.5rem", cursor: "pointer", lineHeight: 1, padding: "0.2rem 0.4rem",
-              }}
-            >
-              {sidebarOpen ? "✕" : "☰"}
-            </button>
-            <span style={{ fontWeight: 600, fontSize: "0.95rem" }}>{currentPage}</span>
-            <span style={{ fontSize: "0.78rem", color: "#bbb" }}>{user?.username}</span>
-          </div>
-
-          <main style={{ flex: 1, padding: "1.25rem", overflowX: "auto" }}>
-            <Outlet />
-          </main>
-        </div>
-
+        {/* Main content */}
+        <main style={{
+          flex: 1, padding: "1.25rem", overflowX: "auto", minWidth: 0,
+          // On mobile push content right of fixed sidebar when open
+        }}>
+          <Outlet />
+        </main>
       </div>
-    </>
+    </div>
   );
 }
