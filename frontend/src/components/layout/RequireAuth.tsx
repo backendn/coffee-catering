@@ -8,7 +8,7 @@ import { useAuth } from "../../hooks/useAuth";
 // flash before an API call fails.
 export default function RequireAuth() {
   const { isAuthenticated } = useAuth();
-
+  console.log("RequireAuth fired, isAuthenticated =", isAuthenticated);
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }

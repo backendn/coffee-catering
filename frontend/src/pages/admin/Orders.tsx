@@ -96,19 +96,20 @@ export default function Orders() {
               <div key={order.id} style={{ background: "#fff", border: "1px solid #e2dccf", borderRadius: 8, overflow: "hidden" }}>
                 {/* Main row */}
                 <div
-                  style={{ display: "grid", gridTemplateColumns: "1fr 80px 120px 140px 160px 180px", gap: "0.5rem", alignItems: "center", padding: "0.75rem 1rem", cursor: "pointer" }}
+                  className="order-row"
+                  style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", alignItems: "center", padding: "0.75rem 1rem", cursor: "pointer" }}
                   onClick={() => handleToggleExpand(order)}
                 >
-                  <div>
+                  <div style={{ flex: "1 1 160px", minWidth: 0 }}>
                     <div style={{ fontWeight: 600, fontSize: "0.9rem" }}>{order.order_number}</div>
                     <div style={{ fontSize: "0.78rem", color: "#888" }}>{order.contact_phone}</div>
                   </div>
-                  <div style={{ fontSize: "0.85rem", textTransform: "capitalize", color: order.order_type === "catering" ? "#6b7a4f" : "#4b3621" }}>
+                  <div style={{ flex: "0 0 auto", fontSize: "0.85rem", textTransform: "capitalize", color: order.order_type === "catering" ? "#6b7a4f" : "#4b3621" }}>
                     {order.order_type}
                   </div>
-                  <div style={{ fontSize: "0.85rem", fontWeight: 600 }}>{order.subtotal} Birr</div>
-                  <div style={{ fontSize: "0.8rem", color: "#888" }}>{new Date(order.created_at).toLocaleDateString()}</div>
-                  <div>
+                  <div style={{ flex: "0 0 auto", fontSize: "0.85rem", fontWeight: 600 }}>{order.subtotal} Birr</div>
+                  <div style={{ flex: "0 0 auto", fontSize: "0.8rem", color: "#888" }}>{new Date(order.created_at).toLocaleDateString()}</div>
+                  <div style={{ flex: "1 1 150px" }}>
                     <select
                       value={order.status}
                       disabled={updatingId === order.id}
@@ -121,8 +122,8 @@ export default function Orders() {
                       ))}
                     </select>
                   </div>
-                  <div style={{ textAlign: "right", fontSize: "0.8rem", color: "#888" }}>
-                    {isExpanded ? "▲ Hide details" : "▼ View details"}
+                  <div style={{ flex: "0 0 auto", fontSize: "0.8rem", color: "#888" }}>
+                    {isExpanded ? "▲ Hide" : "▼ Details"}
                   </div>
                 </div>
 
