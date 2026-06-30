@@ -1,2 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /login
+
+Sitemap: https://sommacoffee.com/sitemap.xml
