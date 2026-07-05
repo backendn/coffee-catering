@@ -12,6 +12,9 @@ logs:
 migrate-up:
 	docker compose run --rm migrate -path /migrations -database "postgres://$${DB_USER}:$${DB_PASSWORD}@postgres:5432/$${DB_NAME}?sslmode=disable" up
 
+migrate-up1:
+	docker compose run --rm migrate -path /migrations -database "postgres://coffee_admin:changeme@postgres:5432/coffee_catering?sslmode=disable" up 1
+
 migrate-down:
 	docker compose run --rm migrate -path /migrations -database "postgres://$${DB_USER}:$${DB_PASSWORD}@postgres:5432/$${DB_NAME}?sslmode=disable" down 1
 

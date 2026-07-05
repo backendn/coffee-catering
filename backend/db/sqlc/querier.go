@@ -25,6 +25,7 @@ type Querier interface {
 	CreateProduct(ctx context.Context, arg CreateProductParams) (Product, error)
 	CreateVariant(ctx context.Context, arg CreateVariantParams) (ProductVariant, error)
 	DecrementVariantStock(ctx context.Context, arg DecrementVariantStockParams) error
+	DeleteCateringPackage(ctx context.Context, id pgtype.UUID) error
 	DeleteProduct(ctx context.Context, id pgtype.UUID) error
 	DeleteVariant(ctx context.Context, id pgtype.UUID) error
 	GetAdminUserByID(ctx context.Context, id pgtype.UUID) (AdminUser, error)
@@ -53,6 +54,7 @@ type Querier interface {
 	ListUpcomingCateringBookings(ctx context.Context) ([]ListUpcomingCateringBookingsRow, error)
 	ListVariantsByProductID(ctx context.Context, productID pgtype.UUID) ([]ProductVariant, error)
 	NextOrderNumber(ctx context.Context) (int64, error)
+	UpdateCateringPackage(ctx context.Context, arg UpdateCateringPackageParams) (CateringPackage, error)
 	UpdateOrderStatus(ctx context.Context, arg UpdateOrderStatusParams) (Order, error)
 	UpdateProduct(ctx context.Context, arg UpdateProductParams) (Product, error)
 	UpdateVariant(ctx context.Context, arg UpdateVariantParams) (ProductVariant, error)

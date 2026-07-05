@@ -18,7 +18,8 @@ func (s *Server) registerRoutes() {
 		s.orderHandler.RegisterPublicRoutes(api)
 		s.productHandler.RegisterPublicRoutes(api)
 		s.cateringHandler.RegisterPublicRoutes(api)
-		s.adminHandler.RegisterPublicRoutes(api) // POST /admin/login — unprotected on purpose
+		s.adminHandler.RegisterPublicRoutes(api)
+		// POST /admin/login — unprotected on purpose
 
 		admin := api.Group("/admin")
 		admin.Use(middleware.RequireAdmin(s.cfg.JWTSecret))
@@ -27,6 +28,7 @@ func (s *Server) registerRoutes() {
 			s.productHandler.RegisterAdminRoutes(admin)
 			s.cateringHandler.RegisterAdminRoutes(admin)
 			s.customerHandler.RegisterAdminRoutes(admin)
+
 		}
 	}
 }

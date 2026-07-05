@@ -10,11 +10,16 @@ import (
 	"time"
 
 	"github.com/backendn/coffee-catering/backend/internal/config"
+	"github.com/backendn/coffee-catering/backend/internal/pkg/upload"
 	"github.com/backendn/coffee-catering/backend/internal/server"
 )
 
 func main() {
 	cfg := config.Load()
+
+	if err := upload.Init(); err != nil {
+		log.Fatalf("failed to initialize cloudinary: %v", err)
+	}
 
 	srv, err := server.New(cfg)
 	if err != nil {

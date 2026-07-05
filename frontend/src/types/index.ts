@@ -26,6 +26,7 @@ export interface CateringPackage {
   price_per_guest?: string;
   flat_price?: string;
   min_guests?: number;
+  image_url?: string;
 }
 
 // Mirrors internal/domain/order/dto.go CreateOrderRequest and friends

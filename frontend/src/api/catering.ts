@@ -27,9 +27,19 @@ export interface CreatePackageInput {
   price_per_guest?: string;
   flat_price?: string;
   min_guests?: number;
+  image_url?: string;
 }
 
 export async function createCateringPackageAdmin(input: CreatePackageInput): Promise<CateringPackage> {
   const res = await apiClient.post<ApiSuccess<CateringPackage>>("/admin/catering/packages", input);
   return res.data.data;
+}
+
+export async function updateCateringPackageAdmin(id: string, input: CreatePackageInput): Promise<CateringPackage> {
+  const res = await apiClient.put<ApiSuccess<CateringPackage>>(`/admin/catering/packages/${id}`, input);
+  return res.data.data;
+}
+
+export async function deleteCateringPackageAdmin(id: string): Promise<void> {
+  await apiClient.delete(`/admin/catering/packages/${id}`);
 }

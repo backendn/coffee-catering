@@ -10,9 +10,6 @@ import "../../styles/promo.css";
 // Photos per package — keyed by package name for now since the backend
 // doesn't store images yet. Add an entry here matching each package you
 // create in the admin, or fall back to a generic catering photo.
-const PACKAGE_IMAGES: Record<string, string> = {
-  // "Coffee Bar for 50": "/images/catering/coffee-bar-50.jpg",
-};
 const FALLBACK_IMAGE = "/images/catering/01.jpg";
 
 export default function Catering() {
@@ -76,7 +73,7 @@ export default function Catering() {
             <div className="pkg-card" key={p.id}>
               <img
                 className="pkg-card__img"
-                src={PACKAGE_IMAGES[p.name] ?? FALLBACK_IMAGE}
+                src={p.image_url || FALLBACK_IMAGE}
                 alt={p.name}
                 loading="lazy"
               />

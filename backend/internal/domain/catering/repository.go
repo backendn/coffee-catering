@@ -33,6 +33,14 @@ func (r *Repository) CreateCateringPackage(ctx context.Context, arg sqlc.CreateC
 	return r.q.CreateCateringPackage(ctx, arg)
 }
 
+func (r *Repository) UpdateCateringPackage(ctx context.Context, arg sqlc.UpdateCateringPackageParams) (sqlc.CateringPackage, error) {
+	return r.q.UpdateCateringPackage(ctx, arg)
+}
+
+func (r *Repository) DeleteCateringPackage(ctx context.Context, id pgtype.UUID) error {
+	return r.q.DeleteCateringPackage(ctx, id)
+}
+
 // ListUpcomingCateringBookings backs the admin calendar view.
 func (r *Repository) ListUpcomingCateringBookings(ctx context.Context) ([]sqlc.ListUpcomingCateringBookingsRow, error) {
 	return r.q.ListUpcomingCateringBookings(ctx)

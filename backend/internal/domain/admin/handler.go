@@ -23,6 +23,8 @@ func (h *Handler) RegisterPublicRoutes(rg *gin.RouterGroup) {
 	rg.POST("/admin/login", h.login)
 }
 
+
+
 func (h *Handler) login(c *gin.Context) {
 	var req LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

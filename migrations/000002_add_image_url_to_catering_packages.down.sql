@@ -1,0 +1,1 @@
+ALTER TABLE catering_packages DROP COLUMN IF EXISTS image_url;

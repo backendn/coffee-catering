@@ -27,9 +27,9 @@ func (q *Queries) CheckDateAvailability(ctx context.Context, eventDate pgtype.Da
 }
 
 const createCateringPackage = `-- name: CreateCateringPackage :one
-INSERT INTO catering_packages (name, description, price_per_guest, flat_price, min_guests)
-VALUES ($1, $2, $3, $4, $5)
-RETURNING id, name, description, price_per_guest, flat_price, min_guests, is_active, created_at, updated_at
+INSERT INTO catering_packages (name, description, price_per_guest, flat_price, min_guests, image_url)
+VALUES ($1, $2, $3, $4, $5, $6)
+RETURNING id, name, description, price_per_guest, flat_price, min_guests, is_active, created_at, updated_at, image_url
 `
 
 type CreateCateringPackageParams struct {
@@ -38,6 +38,7 @@ type CreateCateringPackageParams struct {
 	PricePerGuest pgtype.Numeric `json:"price_per_guest"`
 	FlatPrice     pgtype.Numeric `json:"flat_price"`
 	MinGuests     pgtype.Int4    `json:"min_guests"`
+	ImageUrl      pgtype.Text    `json:"image_url"`
 }
 
 func (q *Queries) CreateCateringPackage(ctx context.Context, arg CreateCateringPackageParams) (CateringPackage, error) {
@@ -47,6 +48,7 @@ func (q *Queries) CreateCateringPackage(ctx context.Context, arg CreateCateringP
 		arg.PricePerGuest,
 		arg.FlatPrice,
 		arg.MinGuests,
+		arg.ImageUrl,
 	)
 	var i CateringPackage
 	err := row.Scan(
@@ -59,12 +61,22 @@ func (q *Queries) CreateCateringPackage(ctx context.Context, arg CreateCateringP
 		&i.IsActive,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ImageUrl,
 	)
 	return i, err
 }
 
+const deleteCateringPackage = `-- name: DeleteCateringPackage :exec
+UPDATE catering_packages SET is_active = false WHERE id = $1
+`
+
+func (q *Queries) DeleteCateringPackage(ctx context.Context, id pgtype.UUID) error {
+	_, err := q.db.Exec(ctx, deleteCateringPackage, id)
+	return err
+}
+
 const getCateringPackageByID = `-- name: GetCateringPackageByID :one
-SELECT id, name, description, price_per_guest, flat_price, min_guests, is_active, created_at, updated_at FROM catering_packages WHERE id = $1
+SELECT id, name, description, price_per_guest, flat_price, min_guests, is_active, created_at, updated_at, image_url FROM catering_packages WHERE id = $1
 `
 
 func (q *Queries) GetCateringPackageByID(ctx context.Context, id pgtype.UUID) (CateringPackage, error) {
@@ -80,12 +92,13 @@ func (q *Queries) GetCateringPackageByID(ctx context.Context, id pgtype.UUID) (C
 		&i.IsActive,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.ImageUrl,
 	)
 	return i, err
 }
 
 const listActiveCateringPackages = `-- name: ListActiveCateringPackages :many
-SELECT id, name, description, price_per_guest, flat_price, min_guests, is_active, created_at, updated_at FROM catering_packages
+SELECT id, name, description, price_per_guest, flat_price, min_guests, is_active, created_at, updated_at, image_url FROM catering_packages
 WHERE is_active = true
 ORDER BY name ASC
 `
@@ -109,6 +122,7 @@ func (q *Queries) ListActiveCateringPackages(ctx context.Context) ([]CateringPac
 			&i.IsActive,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.ImageUrl,
 		); err != nil {
 			return nil, err
 		}
@@ -118,4 +132,47 @@ func (q *Queries) ListActiveCateringPackages(ctx context.Context) ([]CateringPac
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateCateringPackage = `-- name: UpdateCateringPackage :one
+UPDATE catering_packages
+SET name = $2, description = $3, price_per_guest = $4, flat_price = $5, min_guests = $6, image_url = $7
+WHERE id = $1
+RETURNING id, name, description, price_per_guest, flat_price, min_guests, is_active, created_at, updated_at, image_url
+`
+
+type UpdateCateringPackageParams struct {
+	ID            pgtype.UUID    `json:"id"`
+	Name          string         `json:"name"`
+	Description   pgtype.Text    `json:"description"`
+	PricePerGuest pgtype.Numeric `json:"price_per_guest"`
+	FlatPrice     pgtype.Numeric `json:"flat_price"`
+	MinGuests     pgtype.Int4    `json:"min_guests"`
+	ImageUrl      pgtype.Text    `json:"image_url"`
+}
+
+func (q *Queries) UpdateCateringPackage(ctx context.Context, arg UpdateCateringPackageParams) (CateringPackage, error) {
+	row := q.db.QueryRow(ctx, updateCateringPackage,
+		arg.ID,
+		arg.Name,
+		arg.Description,
+		arg.PricePerGuest,
+		arg.FlatPrice,
+		arg.MinGuests,
+		arg.ImageUrl,
+	)
+	var i CateringPackage
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.PricePerGuest,
+		&i.FlatPrice,
+		&i.MinGuests,
+		&i.IsActive,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.ImageUrl,
+	)
+	return i, err
 }

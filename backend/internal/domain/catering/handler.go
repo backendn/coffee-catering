@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/backendn/coffee-catering/backend/internal/pkg/response"
+	"github.com/backendn/coffee-catering/backend/internal/pkg/upload"
 )
 
 type Handler struct {
@@ -26,6 +27,9 @@ func (h *Handler) RegisterPublicRoutes(rg *gin.RouterGroup) {
 // Caller is expected to apply auth middleware to this group.
 func (h *Handler) RegisterAdminRoutes(rg *gin.RouterGroup) {
 	rg.POST("/catering/packages", h.createPackage)
+	rg.PUT("/catering/packages/:id", h.updatePackage)
+	rg.DELETE("/catering/packages/:id", h.deletePackage)
+	rg.POST("/catering/packages/upload-image", h.uploadPackageImage)
 }
 
 func (h *Handler) listPackages(c *gin.Context) {
@@ -59,7 +63,6 @@ func (h *Handler) createPackage(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_request", "message": err.Error()})
 		return
 	}
-
 	pkg, err := h.service.CreatePackage(c.Request.Context(), req)
 	if err != nil {
 		response.Error(c, err)
@@ -67,3 +70,50 @@ func (h *Handler) createPackage(c *gin.Context) {
 	}
 	response.Success(c, http.StatusCreated, pkg)
 }
+
+func (h *Handler) updatePackage(c *gin.Context) {
+	var req UpdatePackageRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_request", "message": err.Error()})
+		return
+	}
+	pkg, err := h.service.UpdatePackage(c.Request.Context(), c.Param("id"), req)
+	if err != nil {
+		response.Error(c, err)
+		return
+	}
+	response.Success(c, http.StatusOK, pkg)
+}
+
+func (h *Handler) deletePackage(c *gin.Context) {
+	if err := h.service.DeletePackage(c.Request.Context(), c.Param("id")); err != nil {
+		response.Error(c, err)
+		return
+	}
+	c.JSON(http.StatusNoContent, nil)
+}
+
+func (h *Handler) uploadPackageImage(c *gin.Context) {
+	fileHeader, err := c.FormFile("image")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": "missing_file", "message": "image file is required"})
+		return
+	}
+
+	file, err := fileHeader.Open()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": "file_open_failed", "message": err.Error()})
+		return
+	}
+	defer file.Close()
+
+	url, err := upload.UploadImage(c.Request.Context(), file, "coffee-catering/packages")
+	if err != nil {
+		response.Error(c, err)
+		return
+	}
+
+	response.Success(c, http.StatusOK, gin.H{"url": url})
+}
+
+

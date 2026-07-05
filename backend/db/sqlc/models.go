@@ -43,6 +43,7 @@ type CateringPackage struct {
 	IsActive      bool               `json:"is_active"`
 	CreatedAt     pgtype.Timestamptz `json:"created_at"`
 	UpdatedAt     pgtype.Timestamptz `json:"updated_at"`
+	ImageUrl      pgtype.Text        `json:"image_url"`
 }
 
 type Customer struct {

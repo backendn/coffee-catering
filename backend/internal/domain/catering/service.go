@@ -34,9 +34,8 @@ func (s *Service) ListPackages(ctx context.Context) ([]PackageResponse, error) {
 	return result, nil
 }
 
-// CheckAvailability tells the frontend how many bookings already exist on a
-// given date. This is advisory only (per v1 scope, double-booking isn't
-// hard-blocked at the DB level) — staff make the final call manually.
+// CheckAvailability tells the frontend how many bookings exist on a given
+// date. Advisory only — staff make the final call manually.
 func (s *Service) CheckAvailability(ctx context.Context, dateStr string) (*AvailabilityResponse, error) {
 	parsed, err := time.Parse("2006-01-02", dateStr)
 	if err != nil {
@@ -55,9 +54,7 @@ func (s *Service) CheckAvailability(ctx context.Context, dateStr string) (*Avail
 	}, nil
 }
 
-// CreatePackage is an admin-only operation. At least one of PricePerGuest
-// or FlatPrice should be set — not enforced here since pricing models may
-// evolve; staff are trusted to fill this in sensibly for now.
+// CreatePackage is an admin-only operation.
 func (s *Service) CreatePackage(ctx context.Context, req CreatePackageRequest) (*PackageResponse, error) {
 	var pricePerGuest, flatPrice pgtype.Numeric
 
@@ -78,6 +75,7 @@ func (s *Service) CreatePackage(ctx context.Context, req CreatePackageRequest) (
 		PricePerGuest: pricePerGuest,
 		FlatPrice:     flatPrice,
 		MinGuests:     pgtype.Int4{Int32: req.MinGuests, Valid: req.MinGuests > 0},
+		ImageUrl:      pgtype.Text{String: req.ImageURL, Valid: req.ImageURL != ""},
 	})
 	if err != nil {
 		return nil, fmt.Errorf("creating catering package: %w", err)
@@ -87,10 +85,56 @@ func (s *Service) CreatePackage(ctx context.Context, req CreatePackageRequest) (
 	return &resp, nil
 }
 
+// UpdatePackage edits an existing catering package.
+func (s *Service) UpdatePackage(ctx context.Context, idStr string, req UpdatePackageRequest) (*PackageResponse, error) {
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		return nil, apperror.NewBadRequest("invalid_package_id", "package id must be a valid UUID")
+	}
+
+	var pricePerGuest, flatPrice pgtype.Numeric
+	if req.PricePerGuest != "" {
+		if err := pricePerGuest.Scan(req.PricePerGuest); err != nil {
+			return nil, apperror.NewBadRequest("invalid_price_per_guest", "price_per_guest must be a valid decimal")
+		}
+	}
+	if req.FlatPrice != "" {
+		if err := flatPrice.Scan(req.FlatPrice); err != nil {
+			return nil, apperror.NewBadRequest("invalid_flat_price", "flat_price must be a valid decimal")
+		}
+	}
+
+	p, err := s.repo.UpdateCateringPackage(ctx, sqlc.UpdateCateringPackageParams{
+		ID:            pgtype.UUID{Bytes: id, Valid: true},
+		Name:          req.Name,
+		Description:   pgtype.Text{String: req.Description, Valid: req.Description != ""},
+		PricePerGuest: pricePerGuest,
+		FlatPrice:     flatPrice,
+		MinGuests:     pgtype.Int4{Int32: req.MinGuests, Valid: req.MinGuests > 0},
+		ImageUrl:      pgtype.Text{String: req.ImageURL, Valid: req.ImageURL != ""},
+	})
+	if err != nil {
+		return nil, fmt.Errorf("updating catering package: %w", err)
+	}
+
+	resp := toPackageResponse(p)
+	return &resp, nil
+}
+
+// DeletePackage soft-deletes a catering package by setting is_active = false.
+func (s *Service) DeletePackage(ctx context.Context, idStr string) error {
+	id, err := uuid.Parse(idStr)
+	if err != nil {
+		return apperror.NewBadRequest("invalid_package_id", "package id must be a valid UUID")
+	}
+	return s.repo.DeleteCateringPackage(ctx, pgtype.UUID{Bytes: id, Valid: true})
+}
+
 func toPackageResponse(p sqlc.CateringPackage) PackageResponse {
 	resp := PackageResponse{
-		ID:   uuid.UUID(p.ID.Bytes).String(),
-		Name: p.Name,
+		ID:       uuid.UUID(p.ID.Bytes).String(),
+		Name:     p.Name,
+		ImageURL: p.ImageUrl.String,
 	}
 	resp.Description = p.Description.String
 	if p.PricePerGuest.Valid {
