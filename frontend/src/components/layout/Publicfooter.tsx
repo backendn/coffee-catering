@@ -134,7 +134,7 @@ Harar, roast in small batches, and grind to order.
           color: "rgba(201,189,169,0.6)",
         }}
       >
-        <span>© {new Date().getFullYear()} Soma Coffee Powder Manufacturing & Catering. All rights reserved.</span>
+        <span>© {new Date().getFullYear()} Soma Coffee Products & Catering. All rights reserved.</span>
         <span>Addis Ababa, Ethiopia 🇪🇹</span>
       </div>
     </footer>
