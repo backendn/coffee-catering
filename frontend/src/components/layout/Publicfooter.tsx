@@ -85,7 +85,7 @@ export default function PublicFooter() {
               <br />
               <a href="tel:0911317531" style={linkStyle}>📞 0911 317 531</a>
               <br />
-              <a href="tel:0911317531" style={linkStyle}>📞 0910 693 852</a>
+              <a href="tel:0910693852" style={linkStyle}>📞 0910 693 852</a>
             </div>
             <div>
               <div style={labelStyle}>Telegram</div>
@@ -95,7 +95,7 @@ export default function PublicFooter() {
             </div>
             <div>
               <div style={labelStyle}>Email</div>
-              <a href="mailto:coffeesoma12@somacoffee.et" style={linkStyle}>coffeesoma12@somacoffee.et</a>
+              <a href="mailto:coffeesoma12@gmail.com" style={linkStyle}>coffeesoma12@gmail.com</a>
             </div>
             <div>
               <div style={labelStyle}>Location</div>
@@ -109,9 +109,9 @@ export default function PublicFooter() {
           <h4 style={headingStyle}>About Us</h4>
           <p style={{ fontSize: "0.875rem", lineHeight: 1.7, margin: "0 0 0.75rem" }}>
             Soma Coffee began in 2016 with a simple belief — that Ethiopian coffee, roasted
-and ground with honest care, should reach every home and every event at
-its freshest. We source washed single-origin beans from Yirgacheffe and
-Harar, roast in small batches, and grind to order.
+            and ground with honest care, should reach every home and every event at
+            its freshest. We source washed single-origin beans from Yirgacheffe and
+            Gojjam, roast in small batches, and grind to order.
           </p>
           <p style={{ fontSize: "0.875rem", lineHeight: 1.7, margin: 0 }}>
             Our catering team brings the full Ethiopian coffee and food experience
@@ -134,7 +134,7 @@ Harar, roast in small batches, and grind to order.
           color: "rgba(201,189,169,0.6)",
         }}
       >
-        <span>© {new Date().getFullYear()} Soma Coffee Products & Catering. All rights reserved.</span>
+        <span>© 2016–{new Date().getFullYear()} Soma Coffee Products & Catering. All rights reserved.</span>
         <span>Addis Ababa, Ethiopia 🇪🇹</span>
       </div>
     </footer>
